@@ -18,7 +18,3 @@ linux:
 win:
   target: nsis
   icon: logo.png
-mac:
-  target: dmg
-  icon: logo.png
-  category: public.app-category.video
