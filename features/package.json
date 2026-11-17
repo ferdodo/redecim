@@ -1,0 +1,13 @@
+{
+  "main": "src/index.ts",
+  "scripts": {
+    "build": "tooling-suite exportcase biome typecheck mutation"
+  },
+  "devDependencies": {
+    "tooling-suite": "^0.0.2",
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "core": "../core"
+  }
+}

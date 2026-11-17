@@ -1,0 +1,53 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions: {}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+
+      - name: Install and build packages
+        run: |
+          for dir in core compressor features design-system electron; do
+            (cd "$dir" && npm install && npm run build)
+          done
+
+      - uses: actions/upload-artifact@v6
+        with:
+          name: appimage
+          path: electron/release/*.AppImage
+          if-no-files-found: error
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v6
+        with:
+          name: appimage
+          path: release
+
+      - name: Create GitHub release with AppImage
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" release/*.AppImage \
+            --title "Redecim $GITHUB_REF_NAME" \
+            --generate-notes

@@ -1,0 +1,39 @@
+services:
+  core:
+    build: core
+  compressor:
+    build:
+      context: compressor
+      additional_contexts:
+        core: service:core
+  features:
+    build:
+      context: features
+      additional_contexts:
+        core: service:core
+  design-system:
+    build: design-system
+  electron:
+    build:
+      context: electron
+      additional_contexts:
+        core: service:core
+        features: service:features
+        compressor: service:compressor
+        design-system: service:design-system
+    ports:
+      - 8080:80
+  lab:
+    build:
+      context: lab
+      additional_contexts:
+        design-system: service:design-system
+    command: npm run dev
+    ports:
+      - 5173:5173
+    develop:
+      watch:
+        - action: rebuild
+          path: lab
+        - action: rebuild
+          path: design-system

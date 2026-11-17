@@ -1,0 +1,15 @@
+appId: fr.redecim.app
+productName: Redecim
+artifactName: ${productName}-${version}.${ext}
+directories:
+  output: release
+files:
+  - dist/**
+  - package.json
+asarUnpack:
+  - node_modules/ffmpeg-static/**
+linux:
+  target: AppImage
+  category: AudioVideo
+  icon: logo.png
+  syncDesktopName: true

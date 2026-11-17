@@ -1,0 +1,10 @@
+{
+  "main": "src/index.ts",
+  "scripts": {
+    "build": "tooling-suite exportcase biome typecheck"
+  },
+  "devDependencies": {
+    "tooling-suite": "^0.0.2",
+    "typescript": "^7.0.2"
+  }
+}
