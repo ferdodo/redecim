@@ -49,5 +49,6 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           gh release create "$GITHUB_REF_NAME" release/*.AppImage \
+            --repo "$GITHUB_REPOSITORY" \
             --title "Redecim $GITHUB_REF_NAME" \
             --generate-notes
