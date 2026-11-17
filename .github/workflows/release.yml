@@ -9,7 +9,11 @@ permissions: {}
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
     permissions:
       contents: read
     steps:
@@ -22,6 +26,7 @@ jobs:
           node-version: 24
 
       - name: Install and build packages
+        shell: bash
         run: |
           for dir in core compressor features design-system electron; do
             (cd "$dir" && npm install && npm run build)
@@ -29,8 +34,12 @@ jobs:
 
       - uses: actions/upload-artifact@v6
         with:
-          name: appimage
-          path: electron/release/*.AppImage
+          name: artifacts-${{ matrix.os }}
+          path: |
+            electron/release/*.AppImage
+            electron/release/*.deb
+            electron/release/*.exe
+            electron/release/*.dmg
           if-no-files-found: error
 
   release:
@@ -41,14 +50,16 @@ jobs:
     steps:
       - uses: actions/download-artifact@v6
         with:
-          name: appimage
+          pattern: artifacts-*
+          merge-multiple: true
           path: release
 
-      - name: Create GitHub release with AppImage
+      - name: Create GitHub release with installers
         env:
           GH_TOKEN: ${{ github.token }}
+        shell: bash
         run: |
-          gh release create "$GITHUB_REF_NAME" release/*.AppImage \
+          gh release create "$GITHUB_REF_NAME" release/*.AppImage release/*.deb release/*.exe release/*.dmg \
             --repo "$GITHUB_REPOSITORY" \
             --title "Redecim $GITHUB_REF_NAME" \
             --generate-notes
