@@ -12,7 +12,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-latest]
     runs-on: ${{ matrix.os }}
     permissions:
       contents: read
@@ -38,7 +38,6 @@ jobs:
           path: |
             electron/release/*.AppImage
             electron/release/*.deb
-            electron/release/*.exe
           if-no-files-found: error
 
   release:
@@ -58,7 +57,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         shell: bash
         run: |
-          gh release create "$GITHUB_REF_NAME" release/*.AppImage release/*.deb release/*.exe \
+          gh release create "$GITHUB_REF_NAME" release/*.AppImage release/*.deb \
             --repo "$GITHUB_REPOSITORY" \
             --title "Redecim $GITHUB_REF_NAME" \
             --generate-notes

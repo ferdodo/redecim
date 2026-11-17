@@ -15,6 +15,3 @@ linux:
   category: AudioVideo
   icon: logo.png
   syncDesktopName: true
-win:
-  target: nsis
-  icon: logo.png
